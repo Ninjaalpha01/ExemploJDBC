@@ -60,7 +60,35 @@ public class CursoDao {
         }
     }
 
-    public Curso buscarPorRA(int ra) {
+    public Curso searchById(int id) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet result = null;
+
+        try {
+            statement = conn.prepareStatement("select * from curso where codigo = ?");
+            statement.setInt(1, id);
+            result = statement.executeQuery();
+
+            if (result.next()) {
+                Curso curso = new Curso();
+
+                curso.setCodigo(result.getInt("codigo"));
+                curso.setNome(result.getString("nome"));
+                curso.setDuracao(result.getInt("duracao"));
+                curso.setPeriodo(result.getString("periodo"));
+
+                System.out.println("Curso encontrado: " + curso.getNome());
+                
+                return curso;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            BancoDados.finalizarStatement(statement);
+            BancoDados.finalizarResultSet(result);
+            BancoDados.desconectar();
+        }
+
         return null;
     }
 

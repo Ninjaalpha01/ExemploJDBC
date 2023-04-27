@@ -41,9 +41,6 @@ public class CursoDaoTeste {
         Scanner input = new Scanner(System.in);
         Curso curso = new Curso();
 
-        System.out.print("Digite o codigo do curso: ");
-        curso.setCodigo(input.nextInt());
-
         System.out.print("Digite a duracao do curso: ");
         curso.setDuracao(input.nextInt());
         input.nextLine();
@@ -65,5 +62,11 @@ public class CursoDaoTeste {
         list = new CursoDao(conn).listar();
 
         return list;
+    }
+
+    public static Curso getCursoById(int id) throws SQLException, IOException {
+        Connection conn = BancoDados.conectar();
+        Curso curso = new CursoDao(conn).searchById(id);
+        return curso;
     }
 }
