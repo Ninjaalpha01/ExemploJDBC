@@ -9,7 +9,6 @@ import java.util.Scanner;
 
 import entities.Aluno;
 import entities.Curso;
-import dao.CursoDao;
 
 public class AlunoDaoTeste {
     public static void main(String[] args) {
@@ -40,8 +39,8 @@ public class AlunoDaoTeste {
     }
 
     private static Aluno registerForm(Connection conn) throws SQLException, IOException {
-        Aluno aluno = new Aluno();
         Scanner input = new Scanner(System.in);
+        Aluno aluno = new Aluno();
 
         System.out.print("Digite o nome do aluno: ");
         aluno.setNome(input.nextLine());
@@ -52,12 +51,14 @@ public class AlunoDaoTeste {
         System.out.print("Digite o coeficiente do aluno: ");
         aluno.setCoeficiente(input.nextDouble());
 
-        System.out.println("Escolha qual curso deseja inserir o aluno: ");
-        System.out.println("Codigo\t\tNome");
-        CursoDaoTeste.getCursoList().forEach(curso -> System.out.println(curso.getCodigo() + "\t\t" + curso.getNome()));
+        // System.out.println("Escolha qual curso deseja inserir o aluno: ");
+        // System.out.println("Codigo\t\tNome");
+        // CursoDaoTeste.getCursoList().forEach(curso -> System.out.println(curso.getCodigo() + "\t\t" + curso.getNome()));
         
-        System.out.print("Digite o codigo do curso: ");
-        Curso curso = CursoDaoTeste.getCursoById(input.nextInt());
+        // System.out.print("Digite o codigo do curso: ");
+        // Curso curso = CursoDaoTeste.getCursoById(input.nextInt());
+        Curso curso = new Curso();
+        curso.setCodigo(4);
         aluno.setCurso(curso);
         System.out.println("Escolhido: " + aluno.getCurso().getNome());
 
@@ -66,6 +67,7 @@ public class AlunoDaoTeste {
     }
 
     public static List<Aluno> getAlunoList() {
+        
         return null;
     }
 }
