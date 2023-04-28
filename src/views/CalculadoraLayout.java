@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 
 public class CalculadoraLayout extends JFrame {
     private BorderLayout layout;
+    private JPanel panel;
 
     private JButton btnOne;
     private JButton btnTwo;
@@ -32,8 +33,6 @@ public class CalculadoraLayout extends JFrame {
     private JButton btnC;
 
     private JTextField txtField;
-
-    private JPanel panel;
 
     public CalculadoraLayout() {
         this.layout = new BorderLayout(20, 20);
