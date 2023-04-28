@@ -39,7 +39,7 @@ public class CursoDao {
         List<Curso> list = new ArrayList<Curso>();
 
         try {
-            statement = conn.prepareStatement("select * from curso order by nome");
+            statement = conn.prepareStatement("select * from curso order by codigo");
             result = statement.executeQuery();
 
             while (result.next()) {
@@ -77,8 +77,6 @@ public class CursoDao {
                 curso.setDuracao(result.getInt("duracao"));
                 curso.setPeriodo(result.getString("periodo"));
 
-                System.out.println("Curso encontrado: " + curso.getNome());
-                
                 return curso;
             }
         } catch (SQLException e) {
@@ -88,7 +86,6 @@ public class CursoDao {
             BancoDados.finalizarResultSet(result);
             BancoDados.desconectar();
         }
-
         return null;
     }
 

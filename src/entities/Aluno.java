@@ -1,7 +1,7 @@
 package entities;
 
 public class Aluno {
-    private int registroAluno;
+    private int registroAcademico;
     private String nome;
     private Curso curso;
     private int periodo;
@@ -11,12 +11,12 @@ public class Aluno {
 
     }
 
-    public int getRegistroAluno() {
-        return registroAluno;
+    public int getRegistroAcademico() {
+        return registroAcademico;
     }
 
-    public void setRegistroAluno(int registroAluno) {
-        this.registroAluno = registroAluno;
+    public void setRegistroAcademico(int registroAcademico) {
+        this.registroAcademico = registroAcademico;
     }
 
     public String getNome() {
