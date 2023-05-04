@@ -158,7 +158,7 @@ public class AlunoWindow extends JFrame {
 		lblCoeficiente.setBounds(195, 162, 80, 15);
 		contentPane.add(lblCoeficiente);
 
-		cbCurso = new JComboBox();
+		cbCurso = new JComboBox<String>();
 		cbCurso.setBounds(259, 70, 288, 19);
 		contentPane.add(cbCurso);
 
