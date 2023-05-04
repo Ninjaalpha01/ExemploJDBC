@@ -2,6 +2,7 @@ package windowbuilder;
 
 import java.awt.EventQueue;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -22,6 +23,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
+
+import entities.Curso;
+import service.CursoService;
+
 import javax.swing.JScrollPane;
 
 public class AlunoWindow extends JFrame {
@@ -33,6 +38,9 @@ public class AlunoWindow extends JFrame {
 	private JMenuBar menuBar;
 	private MaskFormatter mascaraData;
 	private ButtonGroup btnGroupSexo;
+
+	private CursoService cursoService;
+	private JComboBox<String> cbCurso;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -50,6 +58,17 @@ public class AlunoWindow extends JFrame {
 	public AlunoWindow() {
 		this.createMaskDate();
 		this.initComponent();
+
+		this.cursoService = new CursoService();
+		this.buscarCursos();
+	}
+
+	private void buscarCursos() {
+		ArrayList<Curso> cursos = this.cursoService.buscarTodos();
+
+		for (Curso curso : cursos) {
+			this.cbCurso.addItem(curso.getNome());
+		}
 	}
 
 	private void createMaskDate() {
@@ -139,7 +158,7 @@ public class AlunoWindow extends JFrame {
 		lblCoeficiente.setBounds(195, 162, 80, 15);
 		contentPane.add(lblCoeficiente);
 
-		JComboBox cbCurso = new JComboBox();
+		cbCurso = new JComboBox();
 		cbCurso.setBounds(259, 70, 288, 19);
 		contentPane.add(cbCurso);
 

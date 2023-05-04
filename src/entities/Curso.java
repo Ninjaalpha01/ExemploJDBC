@@ -10,6 +10,13 @@ public class Curso {
 
     }
 
+    public Curso(int codigo, String nome, String periodo, int duracao) {
+        this.codigo = codigo;
+        this.nome = nome;
+        this.periodo = periodo;
+        this.duracao = duracao;
+    }
+
     public int getCodigo() {
         return codigo;
     }
