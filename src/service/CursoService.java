@@ -51,4 +51,8 @@ public class CursoService {
             BancoDados.desconectar();
         }
     }
+
+    public Curso searchByName(String cursoName) {
+        return null;
+    }
 }

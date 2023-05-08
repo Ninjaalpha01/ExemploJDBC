@@ -26,7 +26,9 @@ import javax.swing.JMenuItem;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
+import entities.Aluno;
 import entities.Curso;
+import service.AlunoService;
 import service.CursoService;
 
 import javax.swing.JScrollPane;
@@ -41,8 +43,12 @@ public class AlunoWindow extends JFrame {
 	private MaskFormatter mascaraData;
 	private ButtonGroup btnGroupSexo;
 	private JSpinner spPeriodo;
+	private JRadioButton rdbtnMasculino;
+	private JRadioButton rdbtnFeminino;
+	private JRadioButton rdbtnNoInformar;
 
 	private CursoService cursoService;
+	private AlunoService alunoService;
 	private JComboBox<String> cbCurso;
 
 	public void run() {
@@ -59,11 +65,13 @@ public class AlunoWindow extends JFrame {
 	}
 
 	public AlunoWindow() {
-		this.createMaskDate();
-		this.initComponent();
-
-		this.cursoService = new CursoService();
 		try {
+			this.createMaskDate();
+			this.initComponent();
+			
+			this.cursoService = new CursoService();
+			this.alunoService = new AlunoService();
+			
 			this.buscarCursos();
 		} catch (SQLException e) {
 			System.err.println("ERRO: " + e.getMessage());
@@ -136,15 +144,15 @@ public class AlunoWindow extends JFrame {
 		contentPane.add(panel);
 		panel.setLayout(null);
 
-		JRadioButton rdbtnMasculino = new JRadioButton("Masculino");
+		rdbtnMasculino = new JRadioButton("Masculino");
 		rdbtnMasculino.setBounds(24, 24, 96, 23);
 		panel.add(rdbtnMasculino);
 
-		JRadioButton rdbtnFeminino = new JRadioButton("Feminino");
+		rdbtnFeminino = new JRadioButton("Feminino");
 		rdbtnFeminino.setBounds(24, 51, 89, 23);
 		panel.add(rdbtnFeminino);
 
-		JRadioButton rdbtnNoInformar = new JRadioButton("Não Informar");
+		rdbtnNoInformar = new JRadioButton("Não Informar");
 		rdbtnNoInformar.setBounds(24, 78, 117, 23);
 		panel.add(rdbtnNoInformar);
 
@@ -203,7 +211,7 @@ public class AlunoWindow extends JFrame {
 		JButton btnCadastrar = new JButton("Cadastrar");
 		btnCadastrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//cadastrarAluno();
+				cadastrarAluno();
 			}
 		});
 		btnCadastrar.setBounds(276, 214, 117, 25);
@@ -240,5 +248,40 @@ public class AlunoWindow extends JFrame {
 		this.txtDataIngresso.setText("");
 		this.txtCoeficiente.setText("");
 		this.spPeriodo.setValue(0);
+	}
+
+	private void cadastrarAluno() {
+		System.out.println("Cadastrando...");
+		Aluno aluno = new Aluno();
+		
+		aluno.setNome(this.txtTxtnome.getText());
+		aluno.setCoeficiente(Double.parseDouble(this.txtCoeficiente.getText()));
+		aluno.setPeriodo(Integer.parseInt(this.spPeriodo.getValue().toString()));
+		aluno.setDataIngresso(this.txtDataIngresso.getText());
+		aluno.setRegistroAcademico(this.txtTxtregistroacademico.getText());
+		aluno.setSexo(this.verificarSelecaoRbSexo());
+		// aluno.setCurso(cursoService.searchByName(this.cbCurso.getCursor().getName())); // falta fazer a busca por nome no cursoService
+
+		Curso cursoFake = new Curso();
+		cursoFake.setCodigo(23);
+		aluno.setCurso(cursoFake);
+
+		try {
+			alunoService.cadastrar(aluno);
+		} catch (SQLException e) {
+			System.err.println("Erro ao cadastrar aluno.");
+			e.printStackTrace();
+		}
+	}
+
+	private String verificarSelecaoRbSexo() {
+		if(this.rdbtnMasculino.isSelected())
+			return this.rdbtnMasculino.getName();
+		
+		else if(this.rdbtnFeminino.isSelected())
+			return this.rdbtnFeminino.getName();
+		
+		else
+			return this.rdbtnNoInformar.getName();
 	}
 }

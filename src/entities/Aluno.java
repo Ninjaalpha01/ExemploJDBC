@@ -1,15 +1,24 @@
 package entities;
 
 public class Aluno {
-    private int registroAcademico;
     private int periodo;
     private double coeficiente;
+    private String registroAcademico;
     private String nome;
     private String sexo;
+    private String dataIngresso;
     private Curso curso;
 
     public Aluno() {
 
+    }
+
+    public String getDataIngresso() {
+        return dataIngresso;
+    }
+
+    public void setDataIngresso(String dataIngresso) {
+        this.dataIngresso = dataIngresso;
     }
 
     public String getSexo() {
@@ -20,11 +29,11 @@ public class Aluno {
         this.sexo = sexo;
     }
 
-    public int getRegistroAcademico() {
+    public String getRegistroAcademico() {
         return registroAcademico;
     }
 
-    public void setRegistroAcademico(int registroAcademico) {
+    public void setRegistroAcademico(String registroAcademico) {
         this.registroAcademico = registroAcademico;
     }
 

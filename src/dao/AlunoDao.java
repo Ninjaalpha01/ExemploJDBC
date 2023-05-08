@@ -47,7 +47,7 @@ public class AlunoDao {
             while (result.next()) {
                 Aluno aluno = new Aluno();
 
-                aluno.setRegistroAcademico(result.getInt("registro_academico"));
+                // aluno.setRegistroAcademico(result.getInt("registro_academico"));
                 aluno.setNome(result.getString("nome"));
                 aluno.setPeriodo(result.getInt("periodo"));
                 aluno.setCoeficiente(result.getDouble("coeficiente"));
@@ -74,7 +74,7 @@ public class AlunoDao {
             if (result.next()) {
                 Aluno aluno = new Aluno();
 
-                aluno.setRegistroAcademico(result.getInt("registro_academico"));
+                // aluno.setRegistroAcademico(result.getInt("registro_academico"));
                 aluno.setNome(result.getString("nome"));
                 aluno.setPeriodo(result.getInt("periodo"));
                 aluno.setCoeficiente(result.getDouble("coeficiente"));
@@ -101,7 +101,7 @@ public class AlunoDao {
             statement.setInt(2, aluno.getPeriodo());
             statement.setDouble(3, aluno.getCoeficiente());
 
-            statement.setInt(4, aluno.getRegistroAcademico());
+            // statement.setInt(4, aluno.getRegistroAcademico());
 
             statement.executeUpdate();
         } finally {
