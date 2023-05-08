@@ -2,13 +2,22 @@ package entities;
 
 public class Aluno {
     private int registroAcademico;
-    private String nome;
-    private Curso curso;
     private int periodo;
     private double coeficiente;
+    private String nome;
+    private String sexo;
+    private Curso curso;
 
     public Aluno() {
 
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
     }
 
     public int getRegistroAcademico() {

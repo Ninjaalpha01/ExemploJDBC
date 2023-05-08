@@ -1,21 +1,54 @@
 package service;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
+import dao.BancoDados;
 import entities.Curso;
 
 public class CursoService {
-    private ArrayList<Curso> cursos;
+    private Connection conn;
     
     public CursoService() {
-        this.cursos = new ArrayList<Curso>();
-
-        this.cursos.add(new Curso(1, "Ciencia da Computacao", "integral", 4));
-        this.cursos.add(new Curso(2, "Analise e Desenvolvimento de Sistemas", "noturno", 3));
-        this.cursos.add(new Curso(3, "Engenharia da Computacao", "integral", 5));
+        try {
+            this.conn = BancoDados.conectar();
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar ao banco de dados.");
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Erro ao conectar ao banco de dados.");
+            e.printStackTrace();
+        }
     }
 
-    public ArrayList<Curso> buscarTodos() {
-        return this.cursos;
+    public ArrayList<Curso> buscarTodos() throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        ArrayList<Curso> list = new ArrayList<Curso>();
+
+        try {
+            statement = conn.prepareStatement("select * from curso order by codigo");
+            result = statement.executeQuery();
+
+            while (result.next()) {
+                Curso curso = new Curso();
+
+                curso.setCodigo(result.getInt("codigo"));
+                curso.setNome(result.getString("nome"));
+                curso.setDuracao(result.getInt("duracao"));
+                curso.setPeriodo(result.getString("periodo"));
+
+                list.add(curso);
+            }
+            return list;
+        } finally {
+            BancoDados.finalizarStatement(statement);
+            BancoDados.finalizarResultSet(result);
+            BancoDados.desconectar();
+        }
     }
 }

@@ -1,6 +1,8 @@
 package windowbuilder;
 
 import java.awt.EventQueue;
+import java.awt.event.*;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
@@ -38,6 +40,7 @@ public class AlunoWindow extends JFrame {
 	private JMenuBar menuBar;
 	private MaskFormatter mascaraData;
 	private ButtonGroup btnGroupSexo;
+	private JSpinner spPeriodo;
 
 	private CursoService cursoService;
 	private JComboBox<String> cbCurso;
@@ -60,10 +63,15 @@ public class AlunoWindow extends JFrame {
 		this.initComponent();
 
 		this.cursoService = new CursoService();
-		this.buscarCursos();
+		try {
+			this.buscarCursos();
+		} catch (SQLException e) {
+			System.err.println("ERRO: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
-	private void buscarCursos() {
+	private void buscarCursos() throws SQLException {
 		ArrayList<Curso> cursos = this.cursoService.buscarTodos();
 
 		for (Curso curso : cursos) {
@@ -170,7 +178,7 @@ public class AlunoWindow extends JFrame {
 		lblPerodo.setBounds(444, 118, 70, 15);
 		contentPane.add(lblPerodo);
 
-		JSpinner spPeriodo = new JSpinner();
+		spPeriodo = new JSpinner();
 		spPeriodo.setBounds(506, 116, 41, 20);
 		contentPane.add(spPeriodo);
 
@@ -184,10 +192,20 @@ public class AlunoWindow extends JFrame {
 		contentPane.add(separator);
 
 		JButton btnLimparCampos = new JButton("Limpar Campos");
+		btnLimparCampos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				limparCampos();
+			}
+		});
 		btnLimparCampos.setBounds(405, 214, 142, 25);
 		contentPane.add(btnLimparCampos);
 
 		JButton btnCadastrar = new JButton("Cadastrar");
+		btnCadastrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//cadastrarAluno();
+			}
+		});
 		btnCadastrar.setBounds(276, 214, 117, 25);
 		contentPane.add(btnCadastrar);
 
@@ -212,5 +230,15 @@ public class AlunoWindow extends JFrame {
 				));
 				tableAlunos.getColumnModel().getColumn(4).setPreferredWidth(137);
 				tableAlunos.getColumnModel().getColumn(6).setPreferredWidth(92);
+	}
+
+	private void limparCampos() {
+		this.txtTxtregistroacademico.setText("");
+		this.txtTxtnome.setText("");
+		this.btnGroupSexo.clearSelection();
+		this.cbCurso.setSelectedIndex(0);
+		this.txtDataIngresso.setText("");
+		this.txtCoeficiente.setText("");
+		this.spPeriodo.setValue(0);
 	}
 }
