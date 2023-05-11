@@ -103,7 +103,7 @@ public class AlunoDaoTeste {
             aluno.setCurso(curso);
         } else {
             System.out.print("Digite o RA do aluno: ");
-            aluno.setRegistroAcademico(input.nextInt());
+            // aluno.setRegistroAcademico(input.nextInt()); // depois da interface foi mudado o aluno
             input.nextLine();
         }
 
