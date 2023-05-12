@@ -1,6 +1,7 @@
 package windowbuilder;
 
 import java.awt.EventQueue;
+import java.awt.List;
 import java.awt.event.*;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -68,11 +69,12 @@ public class AlunoWindow extends JFrame {
 		try {
 			this.createMaskDate();
 			this.initComponent();
-			
+
 			this.cursoService = new CursoService();
 			this.alunoService = new AlunoService();
-			
+
 			this.buscarCursos();
+			this.buscarAlunos();
 		} catch (SQLException e) {
 			System.err.println("ERRO: " + e.getMessage());
 			e.printStackTrace();
@@ -80,10 +82,31 @@ public class AlunoWindow extends JFrame {
 	}
 
 	private void buscarCursos() throws SQLException {
-		ArrayList<Curso> cursos = this.cursoService.buscarTodos();
+		ArrayList<Curso> cursos = this.cursoService.searchAll();
 
 		for (Curso curso : cursos) {
 			this.cbCurso.addItem(curso.getNome());
+		}
+	}
+
+	private void buscarAlunos() throws SQLException {
+		DefaultTableModel model = (DefaultTableModel) tableAlunos.getModel();
+		model.fireTableDataChanged();
+		model.setRowCount(0);
+
+		ArrayList<Aluno> alunos = this.alunoService.searchAll();
+
+		if (alunos != null) {
+			for (Aluno aluno : alunos) {
+				model.addRow(new Object[] {
+					aluno.getRegistroAcademico(),
+					aluno.getNome(),
+					aluno.getSexo(),
+					aluno.getCurso().getNome(),
+					aluno.getDataIngresso(),
+					aluno.getCoeficiente()
+				});
+			}
 		}
 	}
 
@@ -211,7 +234,11 @@ public class AlunoWindow extends JFrame {
 		JButton btnCadastrar = new JButton("Cadastrar");
 		btnCadastrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				cadastrarAluno();
+				try {
+					cadastrarAluno();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		btnCadastrar.setBounds(276, 214, 117, 25);
@@ -222,22 +249,21 @@ public class AlunoWindow extends JFrame {
 		painelAlunos.setBounds(12, 251, 535, 120);
 		contentPane.add(painelAlunos);
 		painelAlunos.setLayout(null);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(12, 26, 511, 82);
 		painelAlunos.add(scrollPane);
-		
-				tableAlunos = new JTable();
-				scrollPane.setViewportView(tableAlunos);
-				tableAlunos.setModel(new DefaultTableModel(
-					new Object[][] {
-					},
-					new String[] {
+
+		tableAlunos = new JTable();
+		scrollPane.setViewportView(tableAlunos);
+		tableAlunos.setModel(new DefaultTableModel(
+				new Object[][] {
+				},
+				new String[] {
 						"RA", "Nome", "Sexo", "Curso", "Data do Ingresso", "Per\u00EDodo", "Coeficiente"
-					}
-				));
-				tableAlunos.getColumnModel().getColumn(4).setPreferredWidth(137);
-				tableAlunos.getColumnModel().getColumn(6).setPreferredWidth(92);
+				}));
+		tableAlunos.getColumnModel().getColumn(4).setPreferredWidth(137);
+		tableAlunos.getColumnModel().getColumn(6).setPreferredWidth(92);
 	}
 
 	private void limparCampos() {
@@ -250,21 +276,16 @@ public class AlunoWindow extends JFrame {
 		this.spPeriodo.setValue(0);
 	}
 
-	private void cadastrarAluno() {
+	private void cadastrarAluno() throws SQLException {
 		System.out.println("Cadastrando...");
 		Aluno aluno = new Aluno();
-		
+
 		aluno.setNome(this.txtTxtnome.getText());
 		aluno.setCoeficiente(Double.parseDouble(this.txtCoeficiente.getText()));
 		aluno.setPeriodo(Integer.parseInt(this.spPeriodo.getValue().toString()));
 		aluno.setDataIngresso(this.txtDataIngresso.getText());
-		aluno.setRegistroAcademico(this.txtTxtregistroacademico.getText());
 		aluno.setSexo(this.verificarSelecaoRbSexo());
-		// aluno.setCurso(cursoService.searchByName(this.cbCurso.getCursor().getName())); // falta fazer a busca por nome no cursoService
-
-		Curso cursoFake = new Curso();
-		cursoFake.setCodigo(23);
-		aluno.setCurso(cursoFake);
+		aluno.setCurso(cursoService.searchByName(this.cbCurso.getCursor().getName()));
 
 		try {
 			alunoService.cadastrar(aluno);
@@ -275,12 +296,12 @@ public class AlunoWindow extends JFrame {
 	}
 
 	private String verificarSelecaoRbSexo() {
-		if(this.rdbtnMasculino.isSelected())
+		if (this.rdbtnMasculino.isSelected())
 			return this.rdbtnMasculino.getName();
-		
-		else if(this.rdbtnFeminino.isSelected())
+
+		else if (this.rdbtnFeminino.isSelected())
 			return this.rdbtnFeminino.getName();
-		
+
 		else
 			return this.rdbtnNoInformar.getName();
 	}

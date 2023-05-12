@@ -2,8 +2,8 @@ package entities;
 
 public class Aluno {
     private int periodo;
+    private int registroAcademico;
     private double coeficiente;
-    private String registroAcademico;
     private String nome;
     private String sexo;
     private String dataIngresso;
@@ -29,11 +29,11 @@ public class Aluno {
         this.sexo = sexo;
     }
 
-    public String getRegistroAcademico() {
+    public int getRegistroAcademico() {
         return registroAcademico;
     }
 
-    public void setRegistroAcademico(String registroAcademico) {
+    public void setRegistroAcademico(int registroAcademico) {
         this.registroAcademico = registroAcademico;
     }
 
