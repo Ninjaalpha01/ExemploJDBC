@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import entities.Curso;
 
@@ -33,10 +32,10 @@ public class CursoDao {
         }
     }
 
-    public List<Curso> listar() throws SQLException {
+    public ArrayList<Curso> listar() throws SQLException {
         PreparedStatement statement = null;
         ResultSet result = null;
-        List<Curso> list = new ArrayList<Curso>();
+        ArrayList<Curso> list = new ArrayList<Curso>();
 
         try {
             statement = conn.prepareStatement("select * from curso order by codigo");
@@ -79,8 +78,35 @@ public class CursoDao {
 
                 return curso;
             }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } finally {
+            BancoDados.finalizarStatement(statement);
+            BancoDados.finalizarResultSet(result);
+            BancoDados.desconectar();
+        }
+        return null;
+    }
+
+    public Curso searchByName(String cursoName) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet result = null;
+
+        try {
+            statement = conn.prepareStatement("select * from curso where nome = ?");
+            statement.setString(1, cursoName);
+            result = statement.executeQuery();
+
+            if (result.next()) {
+                Curso curso = new Curso();
+
+                curso.setCodigo(result.getInt("codigo"));
+                curso.setNome(result.getString("nome"));
+                curso.setDuracao(result.getInt("duracao"));
+                curso.setPeriodo(result.getString("periodo"));
+
+                return curso;
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Algum dos campos eh nulo");
         } finally {
             BancoDados.finalizarStatement(statement);
             BancoDados.finalizarResultSet(result);

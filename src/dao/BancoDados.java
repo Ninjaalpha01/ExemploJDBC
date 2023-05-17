@@ -36,9 +36,10 @@ public class BancoDados {
 	}
 
 	public static void desconectar() throws SQLException {
-		if (conn != null)
+		if (conn != null) {
 			conn.close();
-		conn = null;
+			conn = null;
+		}
 	}
 
 	public static void finalizarStatement(Statement st) throws SQLException {

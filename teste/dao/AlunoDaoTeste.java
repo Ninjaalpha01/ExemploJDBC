@@ -3,6 +3,7 @@ package dao;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -68,7 +69,7 @@ public class AlunoDaoTeste {
 
         Connection conn = BancoDados.conectar();
 
-        new AlunoDao(conn).cadastrar(aluno);
+        new AlunoDao(conn).create(aluno);
 
         System.out.println("Cadastro efetuado com sucesso!");
     }
@@ -103,7 +104,8 @@ public class AlunoDaoTeste {
             aluno.setCurso(curso);
         } else {
             System.out.print("Digite o RA do aluno: ");
-            // aluno.setRegistroAcademico(input.nextInt()); // depois da interface foi mudado o aluno
+            // aluno.setRegistroAcademico(input.nextInt()); // depois da interface foi
+            // mudado o aluno
             input.nextLine();
         }
 
@@ -116,7 +118,6 @@ public class AlunoDaoTeste {
         System.out.print("Digite o coeficiente do aluno: ");
         aluno.setCoeficiente(input.nextDouble());
 
-
         input.close();
         return aluno;
     }
@@ -128,11 +129,11 @@ public class AlunoDaoTeste {
         }
     }
 
-    public static List<Aluno> getAlunoList() throws SQLException, IOException {
-        List<Aluno> list = null;
+    public static ArrayList<Aluno> getAlunoList() throws SQLException, IOException {
+        ArrayList<Aluno> list = null;
 
         Connection conn = BancoDados.conectar();
-        list = new AlunoDao(conn).listar();
+        list = new AlunoDao(conn).listar(null);
 
         return list;
     }

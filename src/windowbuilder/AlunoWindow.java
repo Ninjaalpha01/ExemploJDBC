@@ -1,8 +1,8 @@
 package windowbuilder;
 
 import java.awt.EventQueue;
-import java.awt.List;
 import java.awt.event.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import service.CursoService;
 import javax.swing.JScrollPane;
 
 public class AlunoWindow extends JFrame {
-	private JTextField txtTxtregistroacademico;
+	private JTextField txtTxtRegistroAcademico;
 	private JTextField txtTxtnome;
 	private JFormattedTextField txtDataIngresso;
 	private JTextField txtCoeficiente;
@@ -52,20 +52,7 @@ public class AlunoWindow extends JFrame {
 	private AlunoService alunoService;
 	private JComboBox<String> cbCurso;
 
-	public void run() {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AlunoWindow frame = new AlunoWindow();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	public AlunoWindow() {
+	public AlunoWindow() throws IOException {
 		try {
 			this.createMaskDate();
 			this.initComponent();
@@ -76,12 +63,12 @@ public class AlunoWindow extends JFrame {
 			this.buscarCursos();
 			this.buscarAlunos();
 		} catch (SQLException e) {
-			System.err.println("ERRO: " + e.getMessage());
+			System.out.println("ERRO: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
 
-	private void buscarCursos() throws SQLException {
+	private void buscarCursos() throws SQLException, IOException {
 		ArrayList<Curso> cursos = this.cursoService.searchAll();
 
 		for (Curso curso : cursos) {
@@ -89,22 +76,25 @@ public class AlunoWindow extends JFrame {
 		}
 	}
 
-	private void buscarAlunos() throws SQLException {
+	private void buscarAlunos() throws SQLException, IOException {
 		DefaultTableModel model = (DefaultTableModel) tableAlunos.getModel();
 		model.fireTableDataChanged();
 		model.setRowCount(0);
 
-		ArrayList<Aluno> alunos = this.alunoService.searchAll();
+		ArrayList<Aluno> alunos;
 
+		alunos = alunoService.searchAll();
+		
 		if (alunos != null) {
 			for (Aluno aluno : alunos) {
 				model.addRow(new Object[] {
-					aluno.getRegistroAcademico(),
-					aluno.getNome(),
-					aluno.getSexo(),
-					aluno.getCurso().getNome(),
-					aluno.getDataIngresso(),
-					aluno.getCoeficiente()
+						aluno.getRegistroAcademico(),
+						aluno.getNome(),
+						aluno.getSexo(),
+						aluno.getCurso().getNome(),
+						aluno.getDataIngresso(),
+						aluno.getPeriodo(),
+						aluno.getCoeficiente()
 				});
 			}
 		}
@@ -147,10 +137,11 @@ public class AlunoWindow extends JFrame {
 		lblRegistroAcadmico.setBounds(12, 12, 139, 15);
 		contentPane.add(lblRegistroAcadmico);
 
-		txtTxtregistroacademico = new JTextField();
-		txtTxtregistroacademico.setBounds(171, 10, 160, 19);
-		contentPane.add(txtTxtregistroacademico);
-		txtTxtregistroacademico.setColumns(10);
+		txtTxtRegistroAcademico = new JTextField();
+		txtTxtRegistroAcademico.setBounds(171, 10, 160, 19);
+		contentPane.add(txtTxtRegistroAcademico);
+		txtTxtRegistroAcademico.setColumns(10);
+		txtTxtRegistroAcademico.setEditable(false);
 
 		JLabel lblNome = new JLabel("Nome");
 		lblNome.setBounds(12, 39, 70, 15);
@@ -238,6 +229,8 @@ public class AlunoWindow extends JFrame {
 					cadastrarAluno();
 				} catch (SQLException e) {
 					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		});
@@ -267,7 +260,7 @@ public class AlunoWindow extends JFrame {
 	}
 
 	private void limparCampos() {
-		this.txtTxtregistroacademico.setText("");
+		this.txtTxtRegistroAcademico.setText("");
 		this.txtTxtnome.setText("");
 		this.btnGroupSexo.clearSelection();
 		this.cbCurso.setSelectedIndex(0);
@@ -276,7 +269,7 @@ public class AlunoWindow extends JFrame {
 		this.spPeriodo.setValue(0);
 	}
 
-	private void cadastrarAluno() throws SQLException {
+	private void cadastrarAluno() throws SQLException, IOException {
 		System.out.println("Cadastrando...");
 		Aluno aluno = new Aluno();
 
@@ -285,10 +278,10 @@ public class AlunoWindow extends JFrame {
 		aluno.setPeriodo(Integer.parseInt(this.spPeriodo.getValue().toString()));
 		aluno.setDataIngresso(this.txtDataIngresso.getText());
 		aluno.setSexo(this.verificarSelecaoRbSexo());
-		aluno.setCurso(cursoService.searchByName(this.cbCurso.getCursor().getName()));
+		aluno.setCurso(this.cursoService.searchByName(this.cbCurso.getSelectedItem().toString()));
 
 		try {
-			alunoService.cadastrar(aluno);
+			new AlunoService().cadastrar(aluno);
 		} catch (SQLException e) {
 			System.err.println("Erro ao cadastrar aluno.");
 			e.printStackTrace();
@@ -297,12 +290,12 @@ public class AlunoWindow extends JFrame {
 
 	private String verificarSelecaoRbSexo() {
 		if (this.rdbtnMasculino.isSelected())
-			return this.rdbtnMasculino.getName();
+			return this.rdbtnMasculino.getText();
 
 		else if (this.rdbtnFeminino.isSelected())
-			return this.rdbtnFeminino.getName();
+			return this.rdbtnFeminino.getText();
 
 		else
-			return this.rdbtnNoInformar.getName();
+			return this.rdbtnNoInformar.getText();
 	}
 }

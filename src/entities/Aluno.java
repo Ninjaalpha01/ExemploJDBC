@@ -10,7 +10,7 @@ public class Aluno {
     private Curso curso;
 
     public Aluno() {
-
+        this.curso = new Curso();
     }
 
     public String getDataIngresso() {
