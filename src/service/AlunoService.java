@@ -20,9 +20,9 @@ public class AlunoService {
         CursoService cursoService = new CursoService();
         ArrayList<Aluno> alunos = new AlunoDao(conn).listar(cursoService);
         
-        for (Aluno aluno : alunos) {
+        // for (Aluno aluno : alunos) {
             // aluno.setCurso(cursoService.);
-        }
+        // }
         
         return alunos;
     }
